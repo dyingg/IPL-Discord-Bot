@@ -1,0 +1,26 @@
+{
+  "name": "ipl-discord-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dyingg/IPL-Discord-Bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dyingg/IPL-Discord-Bot/issues"
+  },
+  "homepage": "https://github.com/dyingg/IPL-Discord-Bot#readme",
+  "dependencies": {
+    "@sentry/node": "^5.25.0",
+    "@sentry/tracing": "^5.25.0",
+    "bbcode-to-markdown": "^1.0.1",
+    "discord.js": "^12.3.1",
+    "request": "^2.88.2"
+  }
+}
