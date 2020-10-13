@@ -52,7 +52,7 @@ function tick() {
           ) {
             for (let content of body.commentaries.content.reverse()) {
               if (!content) {
-                return console.log(content);
+                continue;
               }
 
               if (lastID >= content.id) {
@@ -86,7 +86,7 @@ function tick() {
                   .setThumbnail(
                     `https://static.iplt20.com/players/100x115/${content.details.facingBatsmanId}.png`
                   )
-                  .setFooter("IPLT20| Dying#0001");
+                  .setFooter("IPLT20 Dying#0001");
                 hook.send(embed);
               } else if (content.type === "Eov") {
                 let details = content.details;
@@ -106,7 +106,7 @@ function tick() {
                   .setThumbnail(
                     `https://static.iplt20.com/players/100x115/${bowler.id}.png`
                   )
-                  .setFooter("IPLT20| Dying#0001");
+                  .setFooter("IPLT20 Dying#0001");
 
                 for (let batsmanSum of details.batsmanSummaries) {
                   let { batsman } = batsmanSum;
@@ -120,10 +120,10 @@ function tick() {
                 }
 
                 hook.send(embed);
-                liveWin(hook);
               } else if (content.type === "Manual") {
                 if (!content.details.bbcode) {
-                  return console.log(content);
+                  console.log(content);
+                  continue;
                 }
 
                 let rawText = bbtoMark(content.details.bbcode)
@@ -136,7 +136,7 @@ function tick() {
                   )
                   .setColor("#34eb8c")
                   .setDescription(rawText)
-                  .setFooter("IPLT20| Dying#0001");
+                  .setFooter("IPLT20 Dying#0001");
 
                 hook.send(embed);
               }
