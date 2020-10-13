@@ -4,12 +4,14 @@ const discord = require("discord.js");
 
 const bbtoMark = require("bbcode-to-markdown");
 const Tracing = require("@sentry/tracing");
-const { consoleSandbox } = require("@sentry/utils");
+
 //https://discordapp.com/api/webhooks//
 const hook = new discord.WebhookClient(
   "764889019191525396",
   "bHvLwJhJ-w9cNivfKHnUXh6DqSUt_wnlzc0INB5vjG6sbS3aZeZ7OFW9Ba37o5WJuLfD"
 );
+
+let logged = {};
 
 let lastID = 0;
 
@@ -25,12 +27,17 @@ Sentry.init({
  * Types - Eov
  */
 
+const liveWin = require("./liveWin.js");
+
 function tick() {
   console.log("Running");
   request(
-    "https://cricketapi.platform.iplt20.com//fixtures/22262/commentary?customer=bcci&pageSize=2&sort=desc&cache=" +
+    "https://cricketapi.platform.iplt20.com/fixtures/22264/commentary?customer=bcci&pageSize=6&sort=desc&cache=" +
       Date.now(),
     {
+      headers: {
+        dismay: Date.now(),
+      },
       gzip: true,
       json: true,
     },
@@ -49,8 +56,7 @@ function tick() {
               }
 
               if (lastID >= content.id) {
-                console.log("No update");
-                return;
+                continue;
               }
 
               lastID = content.id;
@@ -76,8 +82,11 @@ function tick() {
                     "https://media.discordapp.net/attachments/764861405454139392/764879532389564456/92Of6SKPBqav3iUs3c2qRWKJd3ZQchmwgAAAAAAAA.png"
                   )
                   .setTitle(title)
-                  .setDescription(rawText);
-
+                  .setDescription(rawText)
+                  .setThumbnail(
+                    `https://static.iplt20.com/players/100x115/${content.details.facingBatsmanId}.png`
+                  )
+                  .setFooter("IPLT20| Dying#0001");
                 hook.send(embed);
               } else if (content.type === "Eov") {
                 let details = content.details;
@@ -89,11 +98,15 @@ function tick() {
                     "LIVE",
                     "https://media.discordapp.net/attachments/764861405454139392/764879532389564456/92Of6SKPBqav3iUs3c2qRWKJd3ZQchmwgAAAAAAAA.png"
                   )
-                  .setTitle(`End of Over ${details.over - 1}`)
+                  .setTitle(`End of Over ${details.over}`)
                   .setColor(`#${team.primaryColor}`)
                   .setDescription(
                     `${team.fullName} are **${details.inningsRuns} /${details.inningsWickets}**\nRuns this over **${details.overRuns}**\nWickets this over **${details.overWickets}**\n**${bowler.fullName}** (Overs: ${bSum.overs} Runs: ${bSum.runs} Wickets: ${bSum.wickets})`
-                  );
+                  )
+                  .setThumbnail(
+                    `https://static.iplt20.com/players/100x115/${bowler.id}.png`
+                  )
+                  .setFooter("IPLT20| Dying#0001");
 
                 for (let batsmanSum of details.batsmanSummaries) {
                   let { batsman } = batsmanSum;
@@ -107,6 +120,7 @@ function tick() {
                 }
 
                 hook.send(embed);
+                liveWin(hook);
               } else if (content.type === "Manual") {
                 if (!content.details.bbcode) {
                   return console.log(content);
@@ -121,7 +135,8 @@ function tick() {
                     "https://media.discordapp.net/attachments/764861405454139392/764879532389564456/92Of6SKPBqav3iUs3c2qRWKJd3ZQchmwgAAAAAAAA.png"
                   )
                   .setColor("#34eb8c")
-                  .setDescription(rawText);
+                  .setDescription(rawText)
+                  .setFooter("IPLT20| Dying#0001");
 
                 hook.send(embed);
               }
@@ -136,4 +151,4 @@ function tick() {
   );
 }
 
-setInterval(tick, 1000);
+setInterval(tick, 2000);
